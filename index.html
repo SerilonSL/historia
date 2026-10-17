@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educación Ciudadana 4° Medio - Master Quiz & Estudio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Custom Styles for animations and transitions -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-200">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="app.navTo('home')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                    <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-slate-900 dark:text-white">EduCiudadana<span class="text-brand-600 dark:text-brand-500">4°</span></h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Master Quiz (60 Preguntas - 17 Clases)</p>
+                </div>
+            </div>
+
+            <!-- Stats & Settings -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                <div class="hidden sm:flex items-center gap-3 bg-slate-100 dark:bg-slate-800/80 px-3 py-1.5 rounded-lg text-xs font-semibold">
+                    <span class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400" title="Precisión General">
+                        <i data-lucide="target" class="w-4 h-4"></i> <span id="nav-acc">0%</span>
+                    </span>
+                    <span class="w-px h-3 bg-slate-300 dark:bg-slate-700"></span>
+                    <span class="flex items-center gap-1 text-amber-500" title="Racha Máxima">
+                        <i data-lucide="zap" class="w-4 h-4"></i> <span id="nav-streak">0</span>
+                    </span>
+                    <span class="w-px h-3 bg-slate-300 dark:bg-slate-700"></span>
+                    <span class="flex items-center gap-1 text-indigo-500 dark:text-indigo-400" title="Marcadas para Repaso">
+                        <i data-lucide="bookmark" class="w-4 h-4"></i> <span id="nav-saved">0</span>
+                    </span>
+                </div>
+
+                <button id="theme-toggle" onclick="app.toggleTheme()" class="p-2 rounded-lg text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- VIEW 1: HOME DASHBOARD -->
+        <section id="view-home" class="space-y-8">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-900 via-indigo-900 to-slate-900 text-white p-6 sm:p-8 shadow-xl">
+                <div class="relative z-10 max-w-2xl space-y-4">
+                    <span class="inline-flex items-center gap-1.5 bg-brand-500/20 border border-brand-400/30 text-brand-300 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+                        <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Resumen de 17 Clases
+                    </span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight">
+                        Prepara tu Examen de Educación Ciudadana en Una Noche
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Accede a 60 preguntas basadas rigurosamente en el programa oficial: Latinoamérica, Estado y Constitución, Economía Financiera, Medios de Comunicación y Legislación Laboral en Chile.
+                    </p>
+                    <div class="flex flex-wrap gap-3 pt-2">
+                        <button onclick="app.startPractice('all')" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-brand-600/30 transition flex items-center gap-2">
+                            <i data-lucide="play" class="w-4 h-4"></i> Practicar Todo (60 Preguntas)
+                        </button>
+                        <button onclick="app.startExam(20)" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold px-5 py-2.5 rounded-xl transition flex items-center gap-2 backdrop-blur-sm">
+                            <i data-lucide="timer" class="w-4 h-4"></i> Modo Examen Express (20 Q)
+                        </button>
+                    </div>
+                </div>
+                <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+                    <i data-lucide="award" class="w-96 h-96"></i>
+                </div>
+            </div>
+
+            <!-- Select Mode Cards -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Card 1: Practica -->
+                <div onclick="app.startPractice('all')" class="group bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-brand-500 dark:hover:border-brand-500 transition shadow-sm hover:shadow-md cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-950/60 text-brand-600 dark:text-brand-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i data-lucide="check-square" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Práctica Libre</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                            Responde a tu ritmo con retroalimentación e información explicativa inmediata después de cada respuesta.
+                        </p>
+                    </div>
+                    <span class="text-brand-600 dark:text-brand-400 text-xs font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                        Iniciar Práctica <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
+                </div>
+
+                <!-- Card 2: Examen -->
+                <div onclick="app.showExamModal()" class="group bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 transition shadow-sm hover:shadow-md cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i data-lucide="clock" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Modo Examen / Evaluación</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                            Simulacro con temporizador, sin respuestas inmediatas. Obtén tu calificación de 1.0 a 7.0 al finalizar.
+                        </p>
+                    </div>
+                    <span class="text-amber-600 dark:text-amber-400 text-xs font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                        Configurar Simulacro <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
+                </div>
+
+                <!-- Card 3: Flashcards -->
+                <div onclick="app.startFlashcards('all')" class="group bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 transition shadow-sm hover:shadow-md cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <i data-lucide="layers" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Modo Flashcards</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                            Tarjetas de estudio giratorias para memorizar conceptos clave, artículos de la Constitución y leyes laborales.
+                        </p>
+                    </div>
+                    <span class="text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                        Estudiar Tarjetas <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Modules Selection Section -->
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white">Explorar por Módulo Temático</h3>
+                    <button onclick="app.startPractice('saved')" class="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1">
+                        <i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i> Repasar Marcadas (<span id="saved-count-btn">0</span>)
+                    </button>
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4" id="modules-list">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: QUIZ / PRACTICE / EXAM -->
+        <section id="view-quiz" class="hidden space-y-6 max-w-4xl mx-auto">
+            <!-- Quiz Header Info -->
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <button onclick="app.confirmExitQuiz()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 transition">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                    <div>
+                        <span id="quiz-mode-badge" class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-brand-100 dark:bg-brand-950 text-brand-600 dark:text-brand-400">
+                            Práctica
+                        </span>
+                        <h3 id="quiz-module-title" class="text-sm font-bold text-slate-800 dark:text-slate-200">
+                            Unidad 1: Chile y Latinoamérica
+                        </h3>
+                    </div>
+                </div>
+
+                <!-- Timer or Counter -->
+                <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
+                    <div id="quiz-timer-container" class="hidden flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-mono font-bold text-sm bg-amber-50 dark:bg-amber-950/40 px-3 py-1 rounded-lg border border-amber-200 dark:border-amber-800">
+                        <i data-lucide="clock" class="w-4 h-4"></i> <span id="quiz-timer">20:00</span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button id="btn-save-question" onclick="app.toggleSaveCurrentQuestion()" class="p-2 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition" title="Guardar para repasar">
+                            <i data-lucide="star" class="w-5 h-5"></i>
+                        </button>
+                        <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                            Pregunta <span id="quiz-current-num" class="text-slate-900 dark:text-white font-bold">1</span> de <span id="quiz-total-num">12</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                <div id="quiz-progress-bar" class="bg-brand-600 h-full w-0 transition-all duration-300"></div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <!-- Tag / Sub-info -->
+                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                    <span id="question-unit-tag" class="font-medium text-slate-400">Clase 1 - 4</span>
+                    <span id="question-id-tag">ID: Q1</span>
+                </div>
+
+                <!-- Text -->
+                <h2 id="question-text" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-relaxed">
+                    Cargando pregunta...
+                </h2>
+
+                <!-- Options -->
+                <div id="quiz-options" class="space-y-3">
+                    <!-- Dynamic Options -->
+                </div>
+
+                <!-- Feedback Area (Only for Practice Mode) -->
+                <div id="quiz-feedback" class="hidden p-4 sm:p-5 rounded-xl border space-y-2">
+                    <div class="flex items-center gap-2 font-bold text-sm" id="feedback-status">
+                        <!-- Correct/Incorrect Icon + Text -->
+                    </div>
+                    <p id="feedback-explanation" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                        Explicación detallada de la pregunta...
+                    </p>
+                </div>
+
+                <!-- Footer Navigation Buttons -->
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700/60">
+                    <button id="btn-prev-q" onclick="app.prevQuestion()" class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 disabled:opacity-40 transition">
+                        Anterior
+                    </button>
+                    <button id="btn-next-q" onclick="app.nextQuestion()" class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white shadow-md transition flex items-center gap-1.5">
+                        <span id="btn-next-text">Siguiente</span> <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: FLASHCARDS -->
+        <section id="view-flashcards" class="hidden space-y-6 max-w-2xl mx-auto">
+            <div class="flex items-center justify-between">
+                <button onclick="app.navTo('home')" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition flex items-center gap-1 text-xs font-semibold">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al Menú
+                </button>
+                <span class="text-xs font-semibold text-slate-500">
+                    Tarjeta <span id="fc-current">1</span> de <span id="fc-total">60</span>
+                </span>
+            </div>
+
+            <!-- Flip Card Container -->
+            <div id="flashcard-container" onclick="app.flipCard()" class="perspective-1000 w-full h-80 sm:h-96 cursor-pointer">
+                <div id="flashcard-inner" class="transform-style-3d duration-500 relative w-full h-full rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 sm:p-8 flex flex-col justify-between text-center select-none">
+                    
+                    <!-- FRONT -->
+                    <div class="backface-hidden absolute inset-0 p-6 sm:p-8 flex flex-col justify-between items-center bg-white dark:bg-slate-800 rounded-2xl">
+                        <div class="w-full flex items-center justify-between text-xs text-slate-400">
+                            <span id="fc-category">Unidad 1</span>
+                            <span class="text-brand-600 dark:text-brand-400 font-semibold flex items-center gap-1">
+                                <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Toca para girar
+                            </span>
+                        </div>
+                        <h3 id="fc-question" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white my-auto leading-relaxed">
+                            ¿Pregunta?
+                        </h3>
+                        <p class="text-xs text-slate-400">Haz clic en la tarjeta para ver la respuesta y explicación</p>
+                    </div>
+
+                    <!-- BACK -->
+                    <div class="rotate-y-180 backface-hidden absolute inset-0 p-6 sm:p-8 flex flex-col justify-between items-center bg-brand-900 text-white rounded-2xl overflow-y-auto">
+                        <div class="w-full flex items-center justify-between text-xs text-brand-300">
+                            <span>Respuesta Correcta</span>
+                            <span class="flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Clave</span>
+                        </div>
+                        <div class="my-auto space-y-3">
+                            <h4 id="fc-answer" class="text-base sm:text-lg font-bold text-amber-300">
+                                Respuesta
+                            </h4>
+                            <p id="fc-explanation" class="text-xs sm:text-sm text-brand-100 leading-relaxed">
+                                Explicación...
+                            </p>
+                        </div>
+                        <p class="text-xs text-brand-400">Toca de nuevo para volver al frente</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Flashcard Controls -->
+            <div class="flex items-center justify-between pt-2">
+                <button onclick="app.prevFlashcard()" class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 text-slate-700 dark:text-slate-200 shadow-sm transition">
+                    <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                </button>
+                <button onclick="app.toggleSaveCurrentFlashcard()" id="fc-save-btn" class="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5 shadow-sm">
+                    <i data-lucide="star" class="w-4 h-4"></i> Guardar para Repaso
+                </button>
+                <button onclick="app.nextFlashcard()" class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 text-slate-700 dark:text-slate-200 shadow-sm transition">
+                    <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW 4: RESULTS SUMMARY -->
+        <section id="view-results" class="hidden space-y-8 max-w-3xl mx-auto">
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-lg text-center space-y-6">
+                <div class="w-20 h-20 rounded-full bg-brand-100 dark:bg-brand-950/80 text-brand-600 dark:text-brand-400 mx-auto flex items-center justify-center">
+                    <i data-lucide="award" class="w-10 h-10"></i>
+                </div>
+
+                <div class="space-y-2">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+                        ¡Evaluación Completada!
+                    </h2>
+                    <p id="results-subtitle" class="text-slate-500 dark:text-slate-400 text-sm">
+                        Aquí está el desglose de tu rendimiento académico en Educación Ciudadana.
+                    </p>
+                </div>
+
+                <!-- Grade / Score Showcase -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4 border-y border-slate-100 dark:border-slate-700">
+                    <div class="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                        <span class="text-xs text-slate-400 font-semibold block mb-1">Nota Chilena</span>
+                        <span id="res-grade" class="text-2xl sm:text-3xl font-black text-brand-600 dark:text-brand-400">7.0</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                        <span class="text-xs text-slate-400 font-semibold block mb-1">Aciertos</span>
+                        <span id="res-score" class="text-2xl sm:text-3xl font-black text-emerald-500">20/20</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                        <span class="text-xs text-slate-400 font-semibold block mb-1">Porcentaje</span>
+                        <span id="res-percentage" class="text-2xl sm:text-3xl font-black text-indigo-500">100%</span>
+                    </div>
+                    <div class="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                        <span class="text-xs text-slate-400 font-semibold block mb-1">Tiempo</span>
+                        <span id="res-time" class="text-2xl sm:text-3xl font-black text-amber-500">05:20</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-3 pt-2">
+                    <button onclick="app.navTo('home')" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                        Volver al Inicio
+                    </button>
+                    <button onclick="app.reviewExamAnswers()" class="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white text-xs font-semibold hover:opacity-90 transition">
+                        Revisar Mis Respuestas
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- EXAM CONFIG MODAL -->
+    <div id="modal-exam" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 max-w-md w-full p-6 space-y-6 shadow-2xl">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i data-lucide="settings" class="w-5 h-5 text-amber-500"></i> Configurar Modo Examen
+                </h3>
+                <button onclick="app.closeExamModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">
+                        Cantidad de Preguntas
+                    </label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="app.setExamLength(15)" id="exam-len-15" class="exam-len-btn border py-2 rounded-xl text-xs font-semibold text-center hover:border-brand-500">15 Preguntas</button>
+                        <button onclick="app.setExamLength(30)" id="exam-len-30" class="exam-len-btn border py-2 rounded-xl text-xs font-semibold text-center hover:border-brand-500 bg-brand-50 border-brand-500 text-brand-600 dark:bg-brand-950 dark:text-brand-400">30 Preguntas</button>
+                        <button onclick="app.setExamLength(60)" id="exam-len-60" class="exam-len-btn border py-2 rounded-xl text-xs font-semibold text-center hover:border-brand-500">60 (Todas)</button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">
+                        Límite de Tiempo
+                    </label>
+                    <select id="exam-time-select" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-xs font-semibold text-slate-800 dark:text-slate-200">
+                        <option value="0">Sin tiempo límite</option>
+                        <option value="15">15 Minutos</option>
+                        <option value="30" selected>30 Minutos</option>
+                        <option value="45">45 Minutos</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="app.startExamFromModal()" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm shadow-lg shadow-amber-500/20 transition">
+                Comenzar Evaluación
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-400">
+        <p>Educación Ciudadana 4° Medio • Basado en las 17 Clases Oficiales • Preparación Intensiva de Examen</p>
+    </footer>
+
+    <!-- APP LOGIC SCRIPT -->
+    <script>
+        /**
+         * QUESTION BANK: 60 Rigorous Questions from 17 Classes
+         * Divided in 5 Modules (12 Questions each)
+         */
+        const QUESTIONS_BANK = [
+            // ==========================================
+            // UNIDAD 1: CHILE Y LATINOAMÉRICA (1-12)
+            // ==========================================
+            {
+                id: 1,
+                unit: 1,
+                unitTitle: "Unidad 1: Chile y Latinoamérica",
+                classRef: "Clase 1-3",
+                question: "¿Cuál de los siguientes elementos constituye un rasgo histórico social común que define la identidad de América Latina?",
+                options: [
+                    "Haber tenido procesos de industrialización idénticos en el siglo XIX.",
+                    "Compartir el pasado colonial europeo y la experiencia de dictaduras cívico-militares entre 1960 y 1980.",
+                    "Poseer un sistema monetario unificado y fronteras completamente abiertas.",
+                    "Tener una población mayoritariamente indígena en todos sus países."
+                ],
+                correct: 1,
+                explanation: "América Latina comparte un proceso de colonización ibérica (España y Portugal) y, en el siglo XX, vivió un periodo común de dictaduras cívico-militares entre las décadas de 1960 y 1980."
+            },
+            {
+                id: 2,
+                unit: 1,
+                unitTitle: "Unidad 1: Chile y Latinoamérica",
+                classRef: "Clase 3",
+                question: "Respecto a los índices de violencia en América Latina, ¿qué porcentaje de los homicidios del planeta se concentran en esta región pese a albergar a menos del 10% de la población mundial?",
+                options: [
+                    "Aproximadamente el 15%.",
+                    "Aproximadamente el 50%.",
+                    "Un tercio (33%) de los homicidios globales.",
+                    "El 70% de los homicidios globales."
+                ],
+                correct: 2,
+                explanation: "A pesar de representar menos del 10% de la población mundial, América Latina concentra aproximadamente un tercio (33%) de todos los homicidios globales, reflejando graves problemas de seguridad."
+            },
+            {
+                id: 3,
+                unit: 1,
+                unitTitle: "Unidad 1: Chile y Latinoamérica",
+                classRef: "Clase 2",
+                question: "¿En qué consiste el concepto de 'Interculturalidad' en contraste con la mera multiculturalidad?",
+                options: [
+                    "En la asimilación forzada de las minorías a la cultura dominante.",
+                    "En la coexistencia de distintas culturas sin que exista diálogo o relación entre ellas.",
+                    "En la interacción, intercambio y relación respetuosa e igualitaria entre distintas culturas en un mismo espacio.",
+                    "En la prohibición legal de manifestaciones culturales extranjeras."
+                ],
+                correct: 2,
+                explanation: "La interculturalidad implica interacción, diálogo y respeto mutuo entre culturas, promoviendo el intercambio enriquecedor, a diferencia del simple reconocimiento pasivo de la multiculturalidad."
+            },
+            {
+                id: 4,
+                unit: 1,
+                unitTitle: "Unidad 1: Chile y Latinoamérica",
+                classRef: "Clase 2-4",
+                question: "¿Cuándo se produce un fenómeno de 'Apropiación Cultural' que vulnera a una comunidad minoritaria?",
+                options: [
+                    "Cuando una cultura minoritaria adopta tecnologías modernas para su beneficio.",
+                    "Cuando una cultura dominante adopta y explota elementos de una cultura minoritaria despojándolos de su significado o lucrando sin beneficiar a sus creadores.",
+                    "Cuando dos culturas firman un tratado internacional de intercambio académico.",
+                    "Cuando se enseñan lenguas originarias en colegios públicos."
+                ],
+                correct: 1,
+                explanation: "La apropiación cultural ocurre cuando elementos simbólicos o sagrados de una cultura desfavorecida son adoptados comercial o estéticamente por un grupo dominante sin respeto ni beneficio económico para sus creadores."
+            },
+            {
+                id: 5,
+                unit: 1,
+                unitTitle: "Unidad 1: Chile y Latinoamérica",
+                classRef: "Clase 4",
+                question: "¿Cuál es la proporción aproximada de población indígena en América Latina en la actualidad y en qué países se concentra su mayor volumen?",
+                options: [
+                    "Representa más del 40% y se concentra en Argentina, Chile y Uruguay.",
+                    "Representa menos del 11% y se concentra en México, Guatemala, Bolivia y Perú.",
+                    "Representa exactamente el 25% y se ubica principalmente en Brasil y Venezuela.",
+                    "Representa menos del 2% y habita exclusivamente en zonas insulares."
+                ],
+                correct: 1,
+                explanation: "La población originaria representa menos del 11% del total latinoamericano, y los países con mayor volumen y porcentaje de población indígena son México, Guatemala, Bolivia y Perú."
+            },
+            {
+                id: 6,
+                unit: 1,
+                unitTitle: "Unidad 1: Chile y Latinoamérica",
+                classRef: "Clase 3",
+                question: "¿Qué caracteriza a una 'Violación de Derechos Humanos' según los estándares normativos de la Educación Ciudadana?",
+                options: [
+                    "Cualquier delito cometido por un ciudadano común contra otro.",
+                    "Acciones u omisiones emanadas desde o por agentes del Estado que atentan contra la dignidad y derechos fundamentales de la población.",
+                    "Cualquier disputa comercial entre dos empresas privadas.",
+                    "El incumplimiento de un contrato laboral de origen privado."
+                ],
+                correct: 1,
+                explanation: "Las violaciones a los Derechos Humanos son cometidas por el Estado o sus agentes (por acción u omisión), al vulnerar los derechos garantizados por tratados e instituciones."
+            },
+            {
+                id: 7,
+                unit: 1,
+                unitTitle: "Unidad 1: Chile y Latinoamérica",
+                classRef: "Clase 4",
+                question: "En cuanto a los indicadores socioeconómicos, ¿qué realidad afecta prioritariamente a las comunidades indígenas en América Latina?",
+                options: [
+                    "Tienen niveles de ingreso superiores al promedio nacional por exenciones tributarias.",
+                    "Presentan tasas de pobreza e informalidad laboral significativamente más altas en comparación con la población no indígena.",
+                    "No sufren brechas de acceso a la salud pública ni a la educación.",
+                    "Poseen pleno control registral sobre el 90% de sus tierras ancestrales."
+                ],
+                correct: 1,
+                explanation: "Estudios sociológicos evidencian que los pueblos originarios continúan sufriendo brechas estructurales, registrando índices de pobreza e indigencia considerablemente mayores que el resto de la población."
+            },
+            {
+                id: 8,
+                unit: 1,
+                unitTitle: "Unidad 1: Chile y Latinoamérica",
+                classRef: "Clase 3",
+                question: "Durante el periodo de dictaduras cívico-militares en América Latina (1960-1980), ¿qué doctrina justificó la represión y la persecución política interna?",
+                options: [
+                    "La Doctrina del Estado Social de Derecho.",
+                    "La Doctrina de la Seguridad Nacional en el marco de la Guerra Fría.",
+                    "La Doctrina Keynesiana de desarrollo económico.",
+                    "El Tratado de Libre Comercio Panamericano."
+                ],
+                correct: 1,
+                explanation: "Bajo la Doctrina de la Seguridad Nacional impulsada en la Guerra Fría, las dictaduras latinoamericanas consideraron al disidente político como un 'enemigo interno', justificando sistemáticas violaciones a los DD.HH."
+            },
+            {
+                id: 9,
+                unit: 1,
+                unitTitle: "Unidad 1: Chile y Latinoamérica",
+                classRef: "Clase 2",
+                question: "¿Qué consecuencia económica negativa trae consigo la apropiación cultural de artesanías indígenas por parte de marcas internacionales?",
+                options: [
+                    "Un incremento desmedido en las exportaciones directas de los artesanos.",
+                    "La pérdida de ingresos económicos directos para los creadores originarios mientras las corporaciones generan ganancias millonarias.",
+                    "La eliminación total de los impuestos aduaneros.",
+                    "El fortalecimiento del turismo sustentable en sus comunidades."
+                ],
+                correct: 1,
+                explanation: "La apropiación comercial genera una asimetría económica donde las multinacionales plagian diseños originarios y capturan las ganancias sin remunerar ni reconocer intelectualmente a las comunidades creadoras."
+            },
+            {
+                id: 10,
+                unit: 1,
+                unitTitle: "Unidad 1: Chile y Latinoamérica",
+                classRef: "Clase 1",
+                question: "Al analizar las diversidades en América Latina, ¿qué término describe mejor la cohabitación de múltiples pueblos y tradiciones culturales dentro de los límites de un mismo Estado?",
+                options: [
+                    "Homogeneización cultural.",
+                    "Plurinacionalidad / Pluralismo cultural.",
+                    "Centralismo republicano.",
+                    "Monoculturalismo institucional."
+                ],
+                correct: 1,
+                explanation: "El pluralismo cultural y la plurinacionalidad hacen referencia al reconocimiento de que dentro de un mismo territorio nacional coexisten diversas naciones, etnias y culturas con identidad propia."
+            },
+            {
+                id: 11,
+                unit: 1,
+                unitTitle: "Unidad 1: Chile y Latinoamérica",
+                classRef: "Clase 3",
+                question: "Respecto a la violencia de género en América Latina, ¿qué indicador social preocupa de forma prioritaria a los organismos de Derechos Humanos?",
+                options: [
+                    "Los elevados índices de femicidios y las persistentes brechas salariales y de cuidados no remunerados.",
+                    "La sobre-representación de mujeres en cargos directivos corporativos.",
+                    "La igualdad absoluta lograda en el ámbito laboral rural.",
+                    "La baja tasa de denuncias por violencia intrafamiliar."
+                ],
+                correct: 0,
+                explanation: "América Latina registra altísimas tasas de femicidios y violencia machista, sumadas a brechas estructurales de género en ingresos y trabajo doméstico no pagado."
+            },
+            {
+                id: 12,
+                unit: 1,
+                unitTitle: "Unidad 1: Chile y Latinoamérica",
+                classRef: "Clase 4",
+                question: "¿Qué demanda central de los pueblos originarios de Chile (como el pueblo Mapuche) ha estado en el centro del debate público cívico?",
+                options: [
+                    "La privatización total de las aguas fluviales.",
+                    " La restitución de tierras ancestrales, el reconocimiento constitucional y la autonomía cultural.",
+                    "El rechazo al acceso a escuelas estatales.",
+                    "La eliminación de la bandera chilena de los edificios públicos."
+                ],
+                correct: 1,
+                explanation: "Las principales reivindicaciones de las comunidades indígenas en Chile giran entorno a la recuperación de tierras ancestrales, la autodeterminación/autonomía y el reconocimiento legal constitucional."
+            },
+
+            // ==========================================
+            // UNIDAD 2: ESTADO Y CONSTITUCIÓN (13-24)
+            // ==========================================
+            {
+                id: 13,
+                unit: 2,
+                unitTitle: "Unidad 2: Estado y Constitución",
+                classRef: "Clase 5",
+                question: "¿Cómo se define conceptualmente el 'Estado' en la formación ciudadana?",
+                options: [
+                    "Como el grupo de ministros de turno que administra el país.",
+                    "Como una organización política y social soberana que ejerce el poder sobre una población asentada en un territorio delimitado.",
+                    "Como una empresa pública encargada de la recaudación tributaria.",
+                    "Como el conjunto de fuerzas armadas y policiales de una nación."
+                ],
+                correct: 1,
+                explanation: "El Estado es la estructura institucional permanente que posee tres elementos fundamentales: Población, Territorio y Poder Soberano."
+            },
+            {
+                id: 14,
+                unit: 2,
+                unitTitle: "Unidad 2: Estado y Constitución",
+                classRef: "Clase 5",
+                question: "En el sistema político presidencialista de Chile, ¿qué doble rol ejerce el Presidente de la República?",
+                options: [
+                    "Jefe de Gobierno y Presidente del Senado.",
+                    "Jefe de Estado y Jefe de Gobierno.",
+                    "Presidente de la Corte Suprema y Jefe de las Fuerzas Armadas.",
+                    "Contralor General y Jefe de Estado."
+                ],
+                correct: 1,
+                explanation: "En el régimen presidencial chileno, el/la Presidente/a concentra el liderazgo internacional e institucional como Jefe de Estado, y la administración política interna como Jefe de Gobierno."
+            },
+            {
+                id: 15,
+                unit: 2,
+                unitTitle: "Unidad 2: Estado y Constitución",
+                classRef: "Clase 5",
+                question: "Según el Artículo 1° de la Constitución de 1980 de Chile, ¿qué consideración recibe la familia y la persona humana?",
+                options: [
+                    "La persona nace subordinada al Estado, y la empresa es el núcleo fundamental.",
+                    "Las personas nacen libres e iguales en dignidad y derechos, y la familia es el núcleo fundamental de la sociedad.",
+                    "Las personas adquieren derechos solo al cumplir la mayoría de edad.",
+                    "El Estado determina la estructura válida de cada familia."
+                ],
+                correct: 1,
+                explanation: "El Art. 1° consagra que 'Las personas nacen libres e iguales en dignidad y derechos' y proclama a la familia como el 'núcleo fundamental de la sociedad'."
+            },
+            {
+                id: 16,
+                unit: 2,
+                unitTitle: "Unidad 2: Estado y Constitución",
+                classRef: "Clase 5",
+                question: "¿Qué son los 'Grupos Intermedios' mencionados en el Artículo 1° de la Constitución y qué principio los ampara?",
+                options: [
+                    "Son los partidos políticos exclusivamente, amparados por el principio de autoridad.",
+                    "Son agrupaciones voluntarias entre la persona y el Estado (juntas de vecinos, clubes, sindicatos), y el Estado les garantiza autonomía bajo el principio de subsidiariedad.",
+                    "Son las municipalidades y gobernaciones territoriales.",
+                    "Son las grandes corporaciones transnacionales subordinadas al gobierno."
+                ],
+                correct: 1,
+                explanation: "Los grupos intermedios son organizaciones creadas por la sociedad civil para satisfacer fines específicos. El Estado reconoce y garantiza su adecuada autonomía (Principio de Subsidiariedad)."
+            },
+            {
+                id: 17,
+                unit: 2,
+                unitTitle: "Unidad 2: Estado y Constitución",
+                classRef: "Clase 5",
+                question: "Según el texto constitucional chileno, ¿cuál es el fin supremo al que debe servir el Estado?",
+                options: [
+                    "La maximización de la recaudación fiscal.",
+                    "El Bien Común, creando condiciones para la realización espiritual y material de todos los habitantes.",
+                    "El crecimiento económico exclusivo de las empresas estatales.",
+                    "La expansión territorial mediante tratados internacionales."
+                ],
+                correct: 1,
+                explanation: "El Artículo 1° establece que el Estado está al servicio de la persona humana y su fin supremo es promover el bien común."
+            },
+            {
+                id: 18,
+                unit: 2,
+                unitTitle: "Unidad 2: Estado y Constitución",
+                classRef: "Clase 5",
+                question: "Según el Artículo 5° de la Constitución, ¿dónde reside esencialmente la Soberanía y cuál es su límite infranqueable?",
+                options: [
+                    "Reside en las Fuerzas Armadas y su límite es el orden público.",
+                    "Reside en la Nación y su ejercicio tiene como límite el respeto a los derechos esenciales que emanan de la naturaleza humana (DD.HH.).",
+                    "Reside en el Presidente de la República y no tiene límites.",
+                    "Reside en el Congreso Nacional y su límite son las leyes ordinarias."
+                ],
+                correct: 1,
+                explanation: "El Art. 5° señala que la soberanía reside esencialmente en la Nación (ejercida mediante plebiscitos y elecciones) y su límite es el respeto a los Derechos Humanos."
+            },
+            {
+                id: 19,
+                unit: 2,
+                unitTitle: "Unidad 2: Estado y Constitución",
+                classRef: "Clase 5 y 9",
+                question: "¿Cuál de los siguientes poderes del Estado tiene como función principal fiscalizar los actos del Gobierno y aprobar o rechazar las leyes?",
+                options: [
+                    "Poder Judicial.",
+                    "Poder Ejecutivo.",
+                    "Poder Legislativo (Congreso Nacional: Cámara de Diputados/as y Senado).",
+                    "Tribunal Constitucional."
+                ],
+                correct: 2,
+                explanation: "El Poder Legislativo recae en el Congreso Nacional (bicameral), encargado de elaborar las leyes y fiscalizar los actos de la administración pública."
+            },
+            {
+                id: 20,
+                unit: 2,
+                unitTitle: "Unidad 2: Estado y Constitución",
+                classRef: "Clase 5",
+                question: "¿Qué principio de la Democracia evita la concentración del poder y el despotismo mediante la separación del Poder Ejecutivo, Legislativo y Judicial?",
+                options: [
+                    "Principio de Soberanía Absoluta.",
+                    "Principio de División de Poderes del Estado.",
+                    "Principio de Centralismo Administrativo.",
+                    "Principio de Plebiscito Obligatorio."
+                ],
+                correct: 1,
+                explanation: "La división e independencia de poderes (teorizada por Montesquieu) garantiza la existencia de pesos y contrapesos para evitar abusos autoritarios."
+            },
+            {
+                id: 21,
+                unit: 2,
+                unitTitle: "Unidad 2: Estado y Constitución",
+                classRef: "Clase 5",
+                question: "En Chile, ¿qué organismo autónomo tiene la función constitucional de controlar la legalidad de los actos de la Administración del Estado y fiscalizar el ingreso y gasto de los fondos públicos?",
+                options: [
+                    "El Banco Central.",
+                    "La Contraloría General de la República (CGR).",
+                    "El Ministerio de Hacienda.",
+                    "El Servicio de Impuestos Internos."
+                ],
+                correct: 1,
+                explanation: "La Contraloría General de la República es un órgano autónomo que vela por la juridicidad de la administración del Estado y cuida el buen uso de los recursos fiscales."
+            },
+            {
+                id: 22,
+                unit: 2,
+                unitTitle: "Unidad 2: Estado y Constitución",
+                classRef: "Clase 5",
+                question: "¿A qué se refiere el concepto de 'Estado de Derecho'?",
+                options: [
+                    "A que los jueces pueden crear leyes según sus criterios personales.",
+                    "A que tanto los gobernantes como los gobernados están subordinados a las leyes y a la Constitución vigentes.",
+                    "A un régimen donde el Presidente puede suspender las leyes indefinidamente.",
+                    "A la obligación de pagar impuestos sin derecho a reclamo legal."
+                ],
+                correct: 1,
+                explanation: "El Estado de Derecho exige que todas las instituciones, autoridades y ciudadanos actúen bajo el imperio de la ley, garantizando la igualdad jurídica y el debido proceso."
+            },
+            {
+                id: 23,
+                unit: 2,
+                unitTitle: "Unidad 2: Estado y Constitución",
+                classRef: "Clase 5",
+                question: "¿En qué consiste la forma de Estado 'Unitaria' como la que posee la República de Chile?",
+                options: [
+                    "Cada región posee sus propias leyes constitucionales e independientes.",
+                    "Existe un solo centro de poder político y un único ordenamiento jurídico aplicable a todo el territorio nacional.",
+                    "El país está dividido en estados federados con parlamentos propios.",
+                    "Las decisiones legislativas son tomadas por los alcaldes."
+                ],
+                correct: 1,
+                explanation: "Chile es un Estado Unitario: las leyes dictadas por el Congreso rigen para todo el territorio nacional, a diferencia de los Estados Federales (ej. EE.UU., Argentina)."
+            },
+            {
+                id: 24,
+                unit: 2,
+                unitTitle: "Unidad 2: Estado y Constitución",
+                classRef: "Clase 5 y 9",
+                question: "¿Cuál es la función exclusiva de la Corte Suprema y los tribunales ordinarios en Chile?",
+                options: [
+                    "Aprobar el Presupuesto de la Nación.",
+                    "Ejercer la facultad jurisdiccional: juzgar y hacer ejecutar lo juzgado en causas civiles y criminales (Poder Judicial).",
+                    "Redactar decretos supremos de urgencia.",
+                    "Dirigir las relaciones exteriores del país."
+                ],
+                correct: 1,
+                explanation: "El Poder Judicial, encabezado por la Corte Suprema, tiene la exclusividad de administrar justicia en los tribunales de la República."
+            },
+
+            // ==========================================
+            // UNIDAD 3: ECONOMÍA Y EDUCACIÓN FINANCIERA (25-36)
+            // ==========================================
+            {
+                id: 25,
+                unit: 3,
+                unitTitle: "Unidad 3: Economía y Finanzas",
+                classRef: "Clase 6",
+                question: "¿Cuál es el 'Problema Económico Central' que da origen a la ciencia económica?",
+                options: [
+                    "La falta de billetes físicos e inflación importada.",
+                    "La existencia de recursos limitados (escasos) frente a necesidades humanas ilimitadas.",
+                    "El monopolio estatal sobre la producción de alimentos.",
+                    "El exceso de ahorro por parte de las familias."
+                ],
+                correct: 1,
+                explanation: "La economía nace de la escasez: los recursos son finitos o escasos, mientras que las necesidades humanas son múltiples e ilimitadas."
+            },
+            {
+                id: 26,
+                unit: 3,
+                unitTitle: "Unidad 3: Economía y Finanzas",
+                classRef: "Clase 6",
+                question: "¿Cuál es la diferencia de enfoque entre la Microeconomía y la Macroeconomía?",
+                options: [
+                    "La Microeconomía estudia las empresas extranjeras y la Macroeconomía las empresas locales.",
+                    "La Microeconomía analiza las decisiones individuales de personas, familias y empresas; la Macroeconomía estudia la economía global y agregados nacionales (PIB, inflación, desempleo).",
+                    "La Microeconomía la administra el Banco Central y la Macroeconomía el Municipio.",
+                    "La Microeconomía estudia solo las monedas virtuales."
+                ],
+                correct: 1,
+                explanation: "La microeconomía enfoca el comportamiento de agentes individuales (compradores/vendedores); la macroeconomía aborda el comportamiento agregado de todo el sistema económico."
+            },
+            {
+                id: 27,
+                unit: 3,
+                unitTitle: "Unidad 3: Economía y Finanzas",
+                classRef: "Clase 6",
+                question: "En la Ley de Oferta y Demanda, ¿qué ocurre habitualmente con el precio de un bien si la demanda aumenta sustancialmente mientras la oferta se mantiene constante?",
+                options: [
+                    "El precio tiende a bajar.",
+                    "El precio tiende a subir.",
+                    "El precio se congela por ley automáticamente.",
+                    "La oferta cae a cero inmediatamente."
+                ],
+                correct: 1,
+                explanation: "Si muchas personas desean adquirir un producto escaso (alta demanda y oferta fija), la competencia entre compradores presiona el precio al alza."
+            },
+            {
+                id: 28,
+                unit: 3,
+                unitTitle: "Unidad 3: Economía y Finanzas",
+                classRef: "Clase 6",
+                question: "¿Qué representa el 'Punto de Equilibrio' ($P^*$) en un gráfico de libre mercado?",
+                options: [
+                    "El punto donde el Estado decide el precio máximo de venta.",
+                    "El precio y cantidad en donde la oferta de los productores coincide exactamente con la demanda de los consumidores.",
+                    "El nivel donde las empresas quiebran por altos costos.",
+                    "El porcentaje fijado para el cobro del IVA (19%)."
+                ],
+                correct: 1,
+                explanation: "El punto de equilibrio ($P^*$) es la intersección entre las curvas de oferta y demanda, donde no existe ni exceso de oferta (sobrestock) ni escasez."
+            },
+            {
+                id: 29,
+                unit: 3,
+                unitTitle: "Unidad 3: Economía y Finanzas",
+                classRef: "Clase 6",
+                question: "¿Qué caracteriza a un Sistema Económico de Libre Mercado (Capitalista) puro?",
+                options: [
+                    "El Estado fija todos los precios de la canasta básica.",
+                    "La asignación de recursos y la fijación de precios se regulan de forma autónoma mediante la oferta y la demanda con escasa o nula intervención estatal.",
+                    "No existe la propiedad privada ni el dinero en efectivo.",
+                    "Las decisiones de producción son tomadas por asambleas vecinales."
+                ],
+                correct: 1,
+                explanation: "En la economía de mercado, la iniciativa privada y la libre competencia guían la producción sin planificación estatal centralizada."
+            },
+            {
+                id: 30,
+                unit: 3,
+                unitTitle: "Unidad 3: Economía y Finanzas",
+                classRef: "Clase 7",
+                question: "Al elaborar un Presupuesto Personal o Familiar, ¿cómo se definen los Gastos Fijos?",
+                options: [
+                    "Erogaciones impredecibles como salidas al cine o vacaciones.",
+                    "Obligaciones de pago indispensables y recurrentes que deben cancelarse periódicamente (ej. arriendo, dividendos, cuentas de servicios básicos).",
+                    "Ingresos extras por concepto de bonos de desempeño.",
+                    "Compras impulsivas realizadas con tarjeta de crédito."
+                ],
+                correct: 1,
+                explanation: "Los gastos fijos son compromisos ineludibles y periódicos indispensables para la subsistencia y el funcionamiento del hogar."
+            },
+            {
+                id: 31,
+                unit: 3,
+                unitTitle: "Unidad 3: Economía y Finanzas",
+                classRef: "Clase 7 y 8",
+                question: "¿Qué es la CAE (Carga Anual Equivalente) y por qué es el indicador financiero más importante al comparar créditos?",
+                options: [
+                    "Es la cuota inicial que exige el banco para abrir una cuenta corriente.",
+                    "Es un porcentaje anual que resume el costo total real del crédito, incluyendo tasa de interés, comisiones, seguros y gastos notariales.",
+                    "Es un impuesto estatal cobrado a las compras con débito.",
+                    "Es un fondo de ahorro voluntario para la jubilación."
+                ],
+                correct: 1,
+                explanation: "La CAE estandariza todos los costos asociados a un préstamo en un solo porcentaje anual. A menor CAE, más económico es el crédito."
+            },
+            {
+                id: 32,
+                unit: 3,
+                unitTitle: "Unidad 3: Economía y Finanzas",
+                classRef: "Clase 7 y 8",
+                question: "¿Cómo se calcula el 'Costo Total del Crédito' que debe reembolsar un deudor?",
+                options: [
+                    "Restando las comisiones al capital solicitado.",
+                    "Multiplicando el valor de cada cuota mensual por el número total de cuotas a pagar.",
+                    "Dividiendo la tasa de interés por los meses pactados.",
+                    "Sumando únicamente el impuesto al cheque."
+                ],
+                correct: 1,
+                explanation: "El Costo Total del Crédito representa la cantidad final de dinero pagada de vuelta al banco: $Valor\\ de\\ Cuota \\times N°\\ de\\ Cuotas$."
+            },
+            {
+                id: 33,
+                unit: 3,
+                unitTitle: "Unidad 3: Economía y Finanzas",
+                classRef: "Clase 8",
+                question: "¿En qué consiste un Crédito Hipotecario y cuál es su garantía característica?",
+                options: [
+                    "Es un préstamo para comprar ropa, garantizado con cheques.",
+                    "Es un préstamo a largo plazo destinado a la adquisición de un inmueble o terreno, el cual queda 'hipotecado' (como garantía de pago para la institución financiera).",
+                    "Es un aval otorgado por el Estado para financiar estudios universitarios sin garantía.",
+                    "Es un crédito rotativo asociado a la tarjeta de supermercado."
+                ],
+                correct: 1,
+                explanation: "El crédito hipotecario otorga financiamiento para viviendas; la propia propiedad actúa como bien de garantía (hipoteca) en caso de incumplimiento."
+            },
+            {
+                id: 34,
+                unit: 3,
+                unitTitle: "Unidad 3: Economía y Finanzas",
+                classRef: "Clase 8",
+                question: "¿Cuál es la función fundamental del 'Seguro de Desgravamen' obligatoriamente asociado a los créditos hipotecarios?",
+                options: [
+                    "Pagar las contribuciones municipales de la vivienda.",
+                    "Extinguir y saldar la deuda pendiente del crédito en caso de fallecimiento del titular titular deudor.",
+                    "Reparar daños en la vivienda provocados por terremotos.",
+                    "Devolver los intereses si el cliente paga por adelantado."
+                ],
+                correct: 1,
+                explanation: "El seguro de desgravamen libera a los herederos de la carga financiera al cubrir la totalidad de la deuda hipotecaria si el titular fallece."
+            },
+            {
+                id: 35,
+                unit: 3,
+                unitTitle: "Unidad 3: Economía y Finanzas",
+                classRef: "Clase 6",
+                question: "¿Qué es la Inflación y qué efecto inmediato genera en la economía de los hogares?",
+                options: [
+                    "Es el aumento generalizado y sostenido de los precios, lo que reduce el poder adquisitivo del dinero.",
+                    "Es el aumento generalizado de los sueldos en términos reales.",
+                    "Es la caída continuada del precio de los combustibles.",
+                    "Es la acumulación de divisas extranjeras en el banco central."
+                ],
+                correct: 0,
+                explanation: "La inflación deteriora el valor de la moneda: con la misma cantidad de dinero se pueden comprar menos bienes y servicios."
+            },
+            {
+                id: 36,
+                unit: 3,
+                unitTitle: "Unidad 3: Economía y Finanzas",
+                classRef: "Clase 6 y 9",
+                question: "En Chile, ¿qué organismo público autónomo tiene como mandato legal velar por la estabilidad de la moneda y controlar la inflación fija fijando la tasa de interés de política monetaria (TPM)?",
+                options: [
+                    "El Ministerio de Economía.",
+                    "El Banco Central de Chile.",
+                    "La Comisión para el Mercado Financiero (CMF).",
+                    "El BancoEstado."
+                ],
+                correct: 1,
+                explanation: "El Banco Central de Chile es un órgano autónomo cuya misión principal es mantener la estabilidad de la moneda y el normal funcionamiento de los pagos."
+            },
+
+            // ==========================================
+            // UNIDAD 4: MEDIOS Y VICIOS DE INFORMACIÓN (37-48)
+            // ==========================================
+            {
+                id: 37,
+                unit: 4,
+                unitTitle: "Unidad 4: Medios de Comunicación",
+                classRef: "Clase 10",
+                question: "¿Cuál es una diferencia estructural clave entre los Medios Masivos de Comunicación (MMC) tradicionales y los Medios Digitales actuales?",
+                options: [
+                    "Los medios tradicionales son bidireccionales y los digitales son unilaterales.",
+                    "Los medios digitales destacan por la interactividad en tiempo real, la inmediatez y la hipertextualidad, mientras los tradicionales son mayormente unilaterales.",
+                    "Los medios tradicionales no requieren financiamiento publicitario.",
+                    "Los medios digitales están exentos de la libertad de expresión."
+                ],
+                correct: 1,
+                explanation: "Los medios digitales permiten al usuario ser receptor y emisor (prosumidor) con interacción instantánea, rompiendo la unidireccionalidad de la TV o el diario impreso."
+            },
+            {
+                id: 38,
+                unit: 4,
+                unitTitle: "Unidad 4: Medios de Comunicación",
+                classRef: "Clase 10",
+                question: "¿Cómo se define el concepto de 'Opinión Pública' en la sociedad democrática?",
+                options: [
+                    "El conjunto de leyes aprobadas por el Congreso en un año.",
+                    "El flujo de opiniones, tendencias de pensamiento y percepciones colectivas compartidas por la sociedad sobre temas de interés público.",
+                    "Los editoriales escritos exclusivamente por los dueños de los canales de TV.",
+                    "Las encuestas censales realizadas por el Instituto Nacional de Estadísticas."
+                ],
+                correct: 1,
+                explanation: "La opinión pública es el sentir o consenso social predominante respecto a coyunturas sociales, éticas o políticas."
+            },
+            {
+                id: 39,
+                unit: 4,
+                unitTitle: "Unidad 4: Medios de Comunicación",
+                classRef: "Clase 12",
+                question: "En el periodismo y la alfabetización mediática, ¿cuál es la distinción esencial entre 'Información' y 'Opinión'?",
+                options: [
+                    "La información es subjetiva y la opinión es objetiva.",
+                    "La Información se basa en hechos comprobables, datos reales y verificados; la Opinión expresa juicios de valor y apreciaciones personales del emisor.",
+                    "Las opiniones siempre son ilegales en medios de comunicación.",
+                    "La información solo la entregan las redes sociales."
+                ],
+                correct: 1,
+                explanation: "Un hecho e información objetiva es verificable fehacientemente; un juicio de opinión es subjetivo e interpretable."
+            },
+            {
+                id: 40,
+                unit: 4,
+                unitTitle: "Unidad 4: Medios de Comunicación",
+                classRef: "Clase 12",
+                question: "¿Qué define rigurosamente a las 'Fake News' o Noticias Falsas?",
+                options: [
+                    "Erores tipográficos cometidos en un periódico impreso.",
+                    "Contenidos falsos creados e icy distribuidos deliberadamente para engañar, desinformar o manipular a la opinión pública con fines ideológicos o lucrativos.",
+                    "Reportajes extensos sobre ciencia ficción en el cine.",
+                    "Anuncios publicitarios autorizados de productos de belleza."
+                ],
+                correct: 1,
+                explanation: "Las Fake News intencionan la desinformación masiva mediante falsedades con apariencia periodística para alterar la percepción pública."
+            },
+            {
+                id: 41,
+                unit: 4,
+                unitTitle: "Unidad 4: Medios de Comunicación",
+                classRef: "Clase 12",
+                question: "¿En qué consiste el vicio de información conocido como 'Hoax' o Engaño por Descontextualización?",
+                options: [
+                    "En usar un hecho, imagen o video real pero asignándole una fecha, lugar o contexto completamente ajeno para tergiversar la verdad.",
+                    "En la traducción simultánea defectuosa de un discurso oficial.",
+                    "En la transmisión de contenido en alta definición no autorizada.",
+                    "En el bloqueo de cuentas de usuarios por parte de un algoritmo."
+                ],
+                correct: 0,
+                explanation: "Un 'Hoax' descontextualiza elementos verídicos (ej. fotos de protestas de hace 10 años presentadas como si ocurrieran hoy) para inducir a engaño."
+            },
+            {
+                id: 42,
+                unit: 4,
+                unitTitle: "Unidad 4: Medios de Comunicación",
+                classRef: "Clase 12",
+                question: "¿Qué es un 'Deepfake' y qué tecnología avanzada emplea para vulnerar la veracidad?",
+                options: [
+                    "Una foto desenfocada tomada desde un teléfono móvil antiguo.",
+                    "Un video o audio hiperrealista alterado mediante Inteligencia Artificial que suplanta el rostro o la voz de una persona haciéndola decir o hacer algo falso.",
+                    "Un virus informático que borra el historial de navegación.",
+                    "Una caricatura política publicada en la sección de entretenimiento."
+                ],
+                correct: 1,
+                explanation: "El Deepfake utiliza algoritmos de aprendizaje profundo (IA) para clonar imágenes y voz con alta precisión, representando un grave desafío a la verdad mediática."
+            },
+            {
+                id: 43,
+                unit: 4,
+                unitTitle: "Unidad 4: Medios de Comunicación",
+                classRef: "Clase 12",
+                question: "¿A qué vicio de la información corresponde la 'Imprecisión' periodística?",
+                options: [
+                    "A presentar datos incompletos, sesgados o sin verificación previa de fuentes confiables, distorsionando la comprensión del espectador.",
+                    "A la emisión de publicidad engañosa sobre medicamentos.",
+                    "Al uso de lenguaje técnico inaccesible en documentales científicos.",
+                    "A la transmisión fuera del horario de protección al menor."
+                ],
+                correct: 0,
+                explanation: "La imprecisión ocurre cuando los medios entregan afirmaciones vagas, verdades a medias o cifras no contrastadas adecuadamente."
+            },
+            {
+                id: 44,
+                unit: 4,
+                unitTitle: "Unidad 4: Medios de Comunicación",
+                classRef: "Clase 10",
+                question: "El fenómeno del 'Hiperconsumismo' promovido frecuentemente por la publicidad mediática se refiere a:",
+                options: [
+                    "El ahorro extremo de los ciudadanos para situaciones de crisis.",
+                    "La tendencia al consumo exacerbado e innecesario de bienes y servicios impulsado por la obsolescencia percibida y el estatus social.",
+                    "La compra exclusiva de insumos de primera necesidad.",
+                    "La regulación estatal sobre los precios de los electrodomésticos."
+                ],
+                correct: 1,
+                explanation: "El hiperconsumismo es el incentivo cultural y publicitario hacia la compra constante de bienes prescindibles, impactando la economía personal y el medio ambiente."
+            },
+            {
+                id: 45,
+                unit: 4,
+                unitTitle: "Unidad 4: Medios de Comunicación",
+                classRef: "Clase 10 y 11",
+                question: "¿Por qué el Pensamiento Crítico es una herramienta vital para la ciudadanía frente a los medios masivos?",
+                options: [
+                    "Porque permite memorizar todas las noticias emitidas en el día.",
+                    "Porque capacita al ciudadano para cuestionar, contrastar fuentes, detectar sesgos e identificar noticias falsas antes de dar por cierta una información.",
+                    "Porque asegura la gratuidad del acceso a internet.",
+                    "Porque evita la regulación de los algoritmos de redes sociales."
+                ],
+                correct: 1,
+                explanation: "El pensamiento crítico permite analizar objetivamente los discursos mediáticos, identificando intereses subyacentes, falacias e imprecisiones."
+            },
+            {
+                id: 46,
+                unit: 4,
+                unitTitle: "Unidad 4: Medios de Comunicación",
+                classRef: "Clase 10",
+                question: "En una democracia, ¿qué derecho fundamental ampara a los medios de comunicación y a los ciudadanos para emitir opiniones sin censura previa?",
+                options: [
+                    "Derecho a la Propiedad Intelectual.",
+                    "Libertad de Expresión e Información.",
+                    "Derecho de Asunción Constitucional.",
+                    "Ley de Protección de Datos Personales."
+                ],
+                correct: 1,
+                explanation: "La Libertad de Expresión garantiza la búsqueda, recepción y difusión de información e ideas de toda índole sin censura previa, constituyendo un pilar democrático."
+            },
+            {
+                id: 47,
+                unit: 4,
+                unitTitle: "Unidad 4: Medios de Comunicación",
+                classRef: "Clase 13",
+                question: "Frente a la proliferación de contenidos engañosos en redes sociales, ¿cuál es una estrategia idónea de verificación de datos (Fact-Checking)?",
+                options: [
+                    "Compartir la noticia de inmediato si genera conmoción emocional.",
+                    "Verificar la fecha, la fuente original, contrastar con medios acreditados y buscar la firma del autor del reporte.",
+                    "Confiar ciegamente en imágenes sin texto explicativo.",
+                    "Guiarse únicamente por la cantidad de 'me gusta' de la publicación."
+                ],
+                correct: 1,
+                explanation: "El Fact-Checking exige rigor: rastrear el origen de la fuente, revisar el contexto y corroborar la noticia con entidades independientes."
+            },
+            {
+                id: 48,
+                unit: 4,
+                unitTitle: "Unidad 4: Medios de Comunicación",
+                classRef: "Clase 10",
+                question: "¿Qué efecto genera el fenómeno de la 'Cámara de Eco' o 'Burbuja de Filtro' en los usuarios de redes sociales?",
+                options: [
+                    "Mantiene al usuario expuesto únicamente a opiniones que confirman sus propios prejuicios, polarizando el debate público.",
+                    "Aumenta la velocidad de descarga de archivos periodísticos.",
+                    "Obliga a los usuarios a leer noticias de posturas opuestas diariamente.",
+                    "Protege la clave secreta de las cuentas de correo electrónico."
+                ],
+                correct: 0,
+                explanation: "Los algoritmos muestran al usuario contenido afin a sus sesgos previos, aislándolo de puntos de vista diversos y endureciendo posturas extremas."
+            },
+
+            // ==========================================
+            // UNIDAD 5: MERCADO Y LEGISLACIÓN LABORAL (49-60)
+            // ==========================================
+            {
+                id: 49,
+                unit: 5,
+                unitTitle: "Unidad 5: Legislación Laboral",
+                classRef: "Clase 14",
+                question: "¿En qué consiste la 'Tercerización' o servicialización del mercado laboral moderno?",
+                options: [
+                    "En la sustitución total de empleados por robots.",
+                    "En el predominio del sector terciario (servicios) e subcontratación de tareas especializadas en lugar del trabajo industrial o agrícola directo.",
+                    "En la prohibición de trabajar más de tres días a la semana.",
+                    "En la obligación estatal de otorgar tres empleos por familia."
+                ],
+                correct: 1,
+                explanation: "La economía contemporánea ha migrado hacia los servicios (tercerización) y la externalización de servicios para aumentar la eficiencia operativa."
+            },
+            {
+                id: 50,
+                unit: 5,
+                unitTitle: "Unidad 5: Legislación Laboral",
+                classRef: "Clase 14",
+                question: "Frente al problema de la 'Obsolescencia Veloz' de los puestos de trabajo por automatización, ¿qué concepto promueve la capacitación continua?",
+                options: [
+                    "Flexibilización salarial sin piso mínimo.",
+                    "Inversión en Capital Humano (a través de instancias como el SENCE) para reconvertir las competencias de las y los trabajadores.",
+                    "Jubilación anticipada obligatoria a los 40 años.",
+                    "Congelamiento de las tecnologías informáticas."
+                ],
+                correct: 1,
+                explanation: "El Capital Humano alude a la acumulación de conocimientos y habilidades; capacitarse continuamente evita que el trabajador quede marginado por la automatización."
+            },
+            {
+                id: 51,
+                unit: 5,
+                unitTitle: "Unidad 5: Legislación Laboral",
+                classRef: "Clase 15",
+                question: "En Chile, ¿qué organismo público está encargado de fiscalizar el cumplimiento de la legislación laboral y velar por los derechos de los trabajadores?",
+                options: [
+                    "La Dirección del Trabajo (DT).",
+                    "El Servicio de Cooperación Técnica (SERCOTEC).",
+                    "La Superintendencia de Pensiones.",
+                    "El Ministerio de Economía."
+                ],
+                correct: 0,
+                explanation: "La Dirección del Trabajo (DT) es el servicio fiscalizador que protege a la parte trabajadora y vela por la aplicación del Código del Trabajo."
+            },
+            {
+                id: 52,
+                unit: 5,
+                unitTitle: "Unidad 5: Legislación Laboral",
+                classRef: "Clase 17",
+                question: "¿Cuáles son las características del Contrato de Trabajo 'A Plazo Fijo' según la legislación chilena?",
+                options: [
+                    "Tiene duración indefinida desde el primer día.",
+                    "Tiene una fecha de término estipulada de antemano y no puede renovarse más de dos veces sin convertirse automáticamente en indefinido.",
+                    "Solo se firma de forma verbal entre amigos.",
+                    "Permite trabajar sin derecho a liquidación de sueldo."
+                ],
+                correct: 1,
+                explanation: "El contrato a plazo fijo establece de entrada su fecha de caducidad. Si se renueva por segunda vez o sobrepasa ciertos plazos legales, deviene en indefinido."
+            },
+            {
+                id: 53,
+                unit: 5,
+                unitTitle: "Unidad 5: Legislación Laboral",
+                classRef: "Clase 15 y 17",
+                question: "En la liquidación de sueldo, ¿cuál de los siguientes ítems SÍ constituye Remuneración imponible?",
+                options: [
+                    "Asignación de Movilización.",
+                    "Asignación de Colación.",
+                    "Sueldo Base y Gratificación Legal (25%).",
+                    "Viáticos de viaje por trabajo."
+                ],
+                correct: 2,
+                explanation: "El Sueldo Base, las Horas Extras y las Gratificaciones son constitutivos de remuneración imponibles; colación, movilización y viáticos son compensaciones no imponibles."
+            },
+            {
+                id: 54,
+                unit: 5,
+                unitTitle: "Unidad 5: Legislación Laboral",
+                classRef: "Clase 17",
+                question: "¿Cómo se remuneran legalmente las 'Horas Extraordinarias' (horas extras) en Chile?",
+                options: [
+                    "Al mismo valor de la hora ordinaria sin recargo.",
+                    "Con un recargo mínimo del 50% sobre el sueldo convenido para la jornada ordinaria.",
+                    "Se pagan únicamente con días libres al final del año.",
+                    "Con un descuento del 10% por concepto de impuestos."
+                ],
+                correct: 1,
+                explanation: "Las horas extras pactadas deben liquidarse con un recargo del 50% sobre el valor del valor hora ordinario de trabajo."
+            },
+            {
+                id: 55,
+                unit: 5,
+                unitTitle: "Unidad 5: Legislación Laboral",
+                classRef: "Clase 16",
+                question: "Bajo la Ley de 40 Horas (en transición gradual desde 44 horas), ¿cuál es el tiempo mínimo legal obligatorio para el descanso de Colación dentro de la jornada diaria?",
+                options: [
+                    "15 minutos imputables a la jornada.",
+                    "30 minutos, los cuales no se consideran trabajados para el cómputo de la jornada diaria.",
+                    "90 minutos pagados como hora extra.",
+                    "No existe tiempo legal para colación."
+                ],
+                correct: 1,
+                explanation: "El Código del Trabajo exige un descanso mínimo de 30 minutos a mitad de la jornada para la colación, el cual no se contabiliza como tiempo trabajado."
+            },
+            {
+                id: 56,
+                unit: 5,
+                unitTitle: "Unidad 5: Legislación Laboral",
+                classRef: "Clase 16",
+                question: "¿A cuántos días hábiles de Feriado Anual (vacaciones pagadas) tiene derecho un trabajador con más de un año de servicio?",
+                options: [
+                    "5 días hábiles.",
+                    "10 días corridos.",
+                    "15 días hábiles con remuneración íntegra.",
+                    "30 días hábiles obligatorios."
+                ],
+                correct: 2,
+                explanation: "Trabajadores con más de un año de antigüedad laboral devengan legalmente 15 días hábiles de vacaciones pagadas al año."
+            },
+            {
+                id: 57,
+                unit: 5,
+                unitTitle: "Unidad 5: Legislación Laboral",
+                classRef: "Clase 16 y 17",
+                question: "¿Qué es un 'Fuero Laboral' en el derecho del trabajo en Chile?",
+                options: [
+                    "Un bono económico otorgado por puntualidad.",
+                    "Una protección especial otorgada por ley a ciertos trabajadores (ej. embarazadas, dirigentes sindicales) que impide su despido sin autorización previa de un juez laboral.",
+                    "El derecho a no pagar impuesto a la renta.",
+                    "Un permiso para faltar al trabajo sin justificación médica."
+                ],
+                correct: 1,
+                explanation: "El fuero inmoviliza la relación laboral: el empleador no puede poner término al contrato sin una autorización judicial previa fundada en causal legal."
+            },
+            {
+                id: 58,
+                unit: 5,
+                unitTitle: "Unidad 5: Legislación Laboral",
+                classRef: "Clase 16 y 17",
+                question: "¿Cuál es la extensión temporal del Fuero Maternidad protegido por el Código del Trabajo?",
+                options: [
+                    "Solo los 9 meses de gestación.",
+                    "Desde el inicio del embarazo y hasta un año después de expirado el descanso de maternidad (aproximadamente hasta que el hijo/a cumple 2 años).",
+                    "Hasta que el hijo ingresa a la enseñanza media.",
+                    "Durante las primeras 6 semanas posteriores al parto."
+                ],
+                correct: 1,
+                explanation: "El fuero maternal protege a la trabajadora desde la concepción hasta un año después de terminado el posnatal (aproximadamente 2 años de edad del niño/a)."
+            },
+            {
+                id: 59,
+                unit: 5,
+                unitTitle: "Unidad 5: Legislación Laboral",
+                classRef: "Clase 17",
+                question: "En materia de Protección a la Paternidad, ¿a cuántos días de permiso pagado tiene derecho el padre trabajador por el nacimiento de un hijo/a?",
+                options: [
+                    "1 día hábil.",
+                    "5 días pagados, que puede utilizar desde el momento del parto.",
+                    "15 días de vacaciones forzadas.",
+                    "No contempla permiso para el padre."
+                ],
+                correct: 1,
+                explanation: "El padre trabajador tiene derecho a un permiso pagado de 5 días por el nacimiento de su hijo/a, distribuidos según su elección dentro del primer mes."
+            },
+            {
+                id: 60,
+                unit: 5,
+                unitTitle: "Unidad 5: Legislación Laboral",
+                classRef: "Clase 17",
+                question: "¿A partir de cuántas trabajadoras contratadas en un centro de trabajo se exige legalmente al empleador disponer o financiar el servicio de Sala Cuna?",
+                options: [
+                    "Desde 5 trabajadoras.",
+                    "A partir de 20 o más trabajadoras de cualquier edad o estado civil.",
+                    "Solo si la empresa tiene más de 100 empleados hombres.",
+                    "No existe número mínimo; es totalmente voluntario."
+                ],
+                correct: 1,
+                explanation: "El Art. 203 del Código del Trabajo obliga a mantener o pagar sala cuna a las empresas que ocupen 20 o más trabajadoras."
+            }
+        ];
+
+        /**
+         * APP STATE MANAGEMENT
+         */
+        class QuizApp {
+            constructor() {
+                this.currentView = 'home';
+                this.currentMode = 'practice'; // practice, exam, flashcard
+                this.activeQuestions = [];
+                this.currentIndex = 0;
+                this.userAnswers = {}; // { questionId: selectedOptionIndex }
+                this.savedQuestionIds = new Set(JSON.parse(localStorage.getItem('edu_saved_q') || '[]'));
+                this.examTimer = null;
+                this.secondsLeft = 0;
+                this.examLengthConfig = 30;
+
+                // Flashcard State
+                this.flashcardIndex = 0;
+                this.flashcardIsFlipped = false;
+
+                // Stats
+                this.stats = JSON.parse(localStorage.getItem('edu_stats') || JSON.stringify({
+                    totalAnswered: 0,
+                    correctAnswered: 0,
+                    streak: 0,
+                    maxStreak: 0
+                }));
+
+                this.init();
+            }
+
+            init() {
+                this.renderModules();
+                this.updateGlobalStatsUI();
+                
+                // Set saved count text
+                document.getElementById('saved-count-btn').textContent = this.savedQuestionIds.size;
+
+                // Re-initialize Lucide Icons
+                lucide.createIcons();
+            }
+
+            // --- Theme Management ---
+            toggleTheme() {
+                document.documentElement.classList.toggle('dark');
+            }
+
+            // --- View Navigation ---
+            navTo(viewId) {
+                // Hide all views
+                ['view-home', 'view-quiz', 'view-flashcards', 'view-results'].forEach(id => {
+                    document.getElementById(id).classList.add('hidden');
+                });
+
+                // Clear active timer if leaving quiz
+                if (viewId !== 'view-quiz' && this.examTimer) {
+                    clearInterval(this.examTimer);
+                }
+
+                document.getElementById(`view-${viewId}`).classList.remove('hidden');
+                this.currentView = viewId;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                lucide.createIcons();
+            }
+
+            // --- Render Modules on Home ---
+            renderModules() {
+                const modules = [
+                    { id: 1, title: "Unidad 1: Chile y Latinoamérica", desc: "12 Preguntas • Interculturalidad, DD.HH. e Indígenas", icon: "globe", color: "text-blue-500 bg-blue-50 dark:bg-blue-950/50" },
+                    { id: 2, title: "Unidad 2: Estado y Constitución", desc: "12 Preguntas • Art. 1, Art. 5, Poderes del Estado", icon: "landmark", color: "text-indigo-500 bg-indigo-50 dark:bg-indigo-950/50" },
+                    { id: 3, title: "Unidad 3: Economía y Finanzas", desc: "12 Preguntas • Oferta/Demanda, CAE, Créditos", icon: "coins", color: "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50" },
+                    { id: 4, title: "Unidad 4: Medios y Vicios Info.", desc: "12 Preguntas • Fake News, Deepfakes, Opinión", icon: "tv", color: "text-amber-500 bg-amber-50 dark:bg-amber-950/50" },
+                    { id: 5, title: "Unidad 5: Legislación Laboral", desc: "12 Preguntas • Contratos, Sueldos, Fueros, 40 hrs", icon: "briefcase", color: "text-purple-500 bg-purple-50 dark:bg-purple-950/50" }
+                ];
+
+                const container = document.getElementById('modules-list');
+                container.innerHTML = modules.map(m => `
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-brand-500 transition shadow-sm space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl ${m.color} flex items-center justify-center font-bold">
+                                <i data-lucide="${m.icon}" class="w-5 h-5"></i>
+                            </div>
+                            <h4 class="font-bold text-sm text-slate-900 dark:text-white">${m.title}</h4>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">${m.desc}</p>
+                        <div class="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-700/60">
+                            <button onclick="app.startPractice(${m.id})" class="flex-1 py-1.5 rounded-lg bg-brand-50 dark:bg-brand-950/80 text-brand-600 dark:text-brand-400 text-xs font-semibold hover:bg-brand-100 transition">
+                                Práctica
+                            </button>
+                            <button onclick="app.startFlashcards(${m.id})" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition" title="Ver Flashcards">
+                                <i data-lucide="layers" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // --- PRACTICE MODE INITIALIZATION ---
+            startPractice(filter) {
+                this.currentMode = 'practice';
+                if (filter === 'all') {
+                    this.activeQuestions = [...QUESTIONS_BANK];
+                } else if (filter === 'saved') {
+                    this.activeQuestions = QUESTIONS_BANK.filter(q => this.savedQuestionIds.has(q.id));
+                    if (this.activeQuestions.length === 0) {
+                        alert("No tienes preguntas marcadas para repasar.");
+                        return;
+                    }
+                } else {
+                    this.activeQuestions = QUESTIONS_BANK.filter(q => q.unit === filter);
+                }
+
+                this.currentIndex = 0;
+                this.userAnswers = {};
+                
+                // UI updates
+                document.getElementById('quiz-mode-badge').textContent = 'Práctica Libre';
+                document.getElementById('quiz-timer-container').classList.add('hidden');
+                document.getElementById('quiz-module-title').textContent = filter === 'all' ? 'Todas las 60 Preguntas' : (filter === 'saved' ? 'Preguntas Marcadas' : `Unidad ${filter}`);
+                
+                this.navTo('quiz');
+                this.renderQuizQuestion();
+            }
+
+            // --- EXAM MODAL & START ---
+            showExamModal() {
+                document.getElementById('modal-exam').classList.remove('hidden');
+            }
+
+            closeExamModal() {
+                document.getElementById('modal-exam').classList.add('hidden');
+            }
+
+            setExamLength(len) {
+                this.examLengthConfig = len;
+                document.querySelectorAll('.exam-len-btn').forEach(btn => {
+                    btn.classList.remove('bg-brand-50', 'border-brand-500', 'text-brand-600', 'dark:bg-brand-950', 'dark:text-brand-400');
+                });
+                document.getElementById(`exam-len-${len}`).classList.add('bg-brand-50', 'border-brand-500', 'text-brand-600', 'dark:bg-brand-950', 'dark:text-brand-400');
+            }
+
+            startExamFromModal() {
+                const minutes = parseInt(document.getElementById('exam-time-select').value);
+                this.closeExamModal();
+                this.startExam(this.examLengthConfig, minutes);
+            }
+
+            startExam(length = 20, minutes = 30) {
+                this.currentMode = 'exam';
+                // Shuffle array and take slice
+                const shuffled = [...QUESTIONS_BANK].sort(() => 0.5 - Math.random());
+                this.activeQuestions = shuffled.slice(0, Math.min(length, QUESTIONS_BANK.length));
+                this.currentIndex = 0;
+                this.userAnswers = {};
+
+                // Setup UI
+                document.getElementById('quiz-mode-badge').textContent = 'Evaluación Simulada';
+                document.getElementById('quiz-module-title').textContent = `Examen (${length} Preguntas)`;
+
+                // Timer Setup
+                if (minutes > 0) {
+                    this.secondsLeft = minutes * 60;
+                    document.getElementById('quiz-timer-container').classList.remove('hidden');
+                    this.updateTimerDisplay();
+                    this.examTimer = setInterval(() => {
+                        this.secondsLeft--;
+                        this.updateTimerDisplay();
+                        if (this.secondsLeft <= 0) {
+                            clearInterval(this.examTimer);
+                            alert("¡El tiempo del examen ha finalizado!");
+                            this.finishExam();
+                        }
+                    }, 1000);
+                } else {
+                    document.getElementById('quiz-timer-container').classList.add('hidden');
+                }
+
+                this.navTo('quiz');
+                this.renderQuizQuestion();
+            }
+
+            updateTimerDisplay() {
+                const m = Math.floor(this.secondsLeft / 60).toString().padStart(2, '0');
+                const s = (this.secondsLeft % 60).toString().padStart(2, '0');
+                document.getElementById('quiz-timer').textContent = `${m}:${s}`;
+            }
+
+            // --- RENDER QUIZ QUESTION ---
+            renderQuizQuestion() {
+                const q = this.activeQuestions[this.currentIndex];
+                if (!q) return;
+
+                // Update info headers
+                document.getElementById('quiz-current-num').textContent = this.currentIndex + 1;
+                document.getElementById('quiz-total-num').textContent = this.activeQuestions.length;
+                document.getElementById('question-unit-tag').textContent = `${q.unitTitle} (${q.classRef})`;
+                document.getElementById('question-id-tag').textContent = `ID: Q${q.id}`;
+                document.getElementById('question-text').textContent = q.question;
+
+                // Progress Bar
+                const pct = ((this.currentIndex + 1) / this.activeQuestions.length) * 100;
+                document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+
+                // Update Bookmark Star Button
+                const isSaved = this.savedQuestionIds.has(q.id);
+                const starBtn = document.getElementById('btn-save-question');
+                if (isSaved) {
+                    starBtn.classList.add('text-amber-400', 'fill-amber-400');
+                } else {
+                    starBtn.classList.remove('text-amber-400', 'fill-amber-400');
+                }
+
+                // Options Rendering
+                const optionsContainer = document.getElementById('quiz-options');
+                optionsContainer.innerHTML = '';
+
+                const userSelected = this.userAnswers[q.id];
+
+                q.options.forEach((optText, optIdx) => {
+                    const optionBtn = document.createElement('button');
+                    optionBtn.className = `w-full p-4 rounded-xl text-left border text-xs sm:text-sm transition flex items-start gap-3 select-none `;
+                    
+                    // Style logic based on answered / mode
+                    if (userSelected !== undefined) {
+                        if (this.currentMode === 'practice') {
+                            if (optIdx === q.correct) {
+                                optionBtn.className += `bg-emerald-50 border-emerald-500 text-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-200 font-semibold`;
+                            } else if (optIdx === userSelected) {
+                                optionBtn.className += `bg-rose-50 border-rose-500 text-rose-900 dark:bg-rose-950/60 dark:text-rose-200`;
+                            } else {
+                                optionBtn.className += `border-slate-200 dark:border-slate-700 opacity-60`;
+                            }
+                        } else {
+                            // Exam mode: simply mark selection
+                            if (optIdx === userSelected) {
+                                optionBtn.className += `bg-brand-50 border-brand-500 text-brand-900 dark:bg-brand-950 dark:text-brand-200 font-semibold`;
+                            } else {
+                                optionBtn.className += `border-slate-200 dark:border-slate-700 hover:border-slate-300`;
+                            }
+                        }
+                    } else {
+                        optionBtn.className += `border-slate-200 dark:border-slate-700 hover:border-brand-500 hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-800 dark:text-slate-200`;
+                    }
+
+                    optionBtn.onclick = () => this.selectOption(optIdx);
+
+                    const letter = String.fromCharCode(65 + optIdx); // A, B, C, D
+                    optionBtn.innerHTML = `
+                        <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center font-bold text-xs shrink-0">${letter}</span>
+                        <span class="leading-relaxed mt-0.5">${optText}</span>
+                    `;
+                    optionsContainer.appendChild(optionBtn);
+                });
+
+                // Feedback Area (Practice Mode)
+                const feedbackBox = document.getElementById('quiz-feedback');
+                if (this.currentMode === 'practice' && userSelected !== undefined) {
+                    feedbackBox.classList.remove('hidden');
+                    const isCorrect = userSelected === q.correct;
+                    const statusElem = document.getElementById('feedback-status');
+                    
+                    if (isCorrect) {
+                        feedbackBox.className = 'p-4 sm:p-5 rounded-xl border bg-emerald-50 border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-800 space-y-2';
+                        statusElem.className = 'flex items-center gap-2 font-bold text-sm text-emerald-700 dark:text-emerald-400';
+                        statusElem.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5"></i> ¡Respuesta Correcta!`;
+                    } else {
+                        feedbackBox.className = 'p-4 sm:p-5 rounded-xl border bg-rose-50 border-rose-200 dark:bg-rose-950/40 dark:border-rose-800 space-y-2';
+                        statusElem.className = 'flex items-center gap-2 font-bold text-sm text-rose-700 dark:text-rose-400';
+                        statusElem.innerHTML = `<i data-lucide="x-circle" class="w-5 h-5"></i> Respuesta Incorrecta`;
+                    }
+
+                    document.getElementById('feedback-explanation').textContent = q.explanation;
+                } else {
+                    feedbackBox.classList.add('hidden');
+                }
+
+                // Prev / Next Buttons State
+                document.getElementById('btn-prev-q').disabled = this.currentIndex === 0;
+                
+                const isLast = this.currentIndex === this.activeQuestions.length - 1;
+                document.getElementById('btn-next-text').textContent = isLast ? (this.currentMode === 'exam' ? 'Finalizar Examen' : 'Ver Resultados') : 'Siguiente';
+
+                lucide.createIcons();
+            }
+
+            selectOption(optIdx) {
+                const q = this.activeQuestions[this.currentIndex];
+                // In practice mode, lock answer once selected
+                if (this.currentMode === 'practice' && this.userAnswers[q.id] !== undefined) return;
+
+                this.userAnswers[q.id] = optIdx;
+
+                // Update Stats if Practice Mode
+                if (this.currentMode === 'practice') {
+                    this.stats.totalAnswered++;
+                    if (optIdx === q.correct) {
+                        this.stats.correctAnswered++;
+                        this.stats.streak++;
+                        if (this.stats.streak > this.stats.maxStreak) this.stats.maxStreak = this.stats.streak;
+                    } else {
+                        this.stats.streak = 0;
+                    }
+                    this.saveStats();
+                }
+
+                this.renderQuizQuestion();
+            }
+
+            nextQuestion() {
+                if (this.currentIndex < this.activeQuestions.length - 1) {
+                    this.currentIndex++;
+                    this.renderQuizQuestion();
+                } else {
+                    // Reached the end
+                    if (this.currentMode === 'exam') {
+                        this.finishExam();
+                    } else {
+                        this.finishPractice();
+                    }
+                }
+            }
+
+            prevQuestion() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                    this.renderQuizQuestion();
+                }
+            }
+
+            toggleSaveCurrentQuestion() {
+                const q = this.activeQuestions[this.currentIndex];
+                if (!q) return;
+
+                if (this.savedQuestionIds.has(q.id)) {
+                    this.savedQuestionIds.delete(q.id);
+                } else {
+                    this.savedQuestionIds.add(q.id);
+                }
+
+                localStorage.setItem('edu_saved_q', JSON.stringify([...this.savedQuestionIds]));
+                document.getElementById('saved-count-btn').textContent = this.savedQuestionIds.size;
+                document.getElementById('nav-saved').textContent = this.savedQuestionIds.size;
+
+                this.renderQuizQuestion();
+            }
+
+            confirmExitQuiz() {
+                if (confirm("¿Estás seguro de que deseas salir? El progreso del intento actual no guardado se perderá.")) {
+                    this.navTo('home');
+                }
+            }
+
+            // --- FINISH EXAM & CALCULATE CHILEAN GRADE (1.0 to 7.0) ---
+            finishExam() {
+                if (this.examTimer) clearInterval(this.examTimer);
+
+                let correctCount = 0;
+                this.activeQuestions.forEach(q => {
+                    if (this.userAnswers[q.id] === q.correct) {
+                        correctCount++;
+                    }
+                });
+
+                const total = this.activeQuestions.length;
+                const percentage = Math.round((correctCount / total) * 100);
+
+                // Chilean Grade Calculation Scale (60% exigencia):
+                // If % < 60: Grade = 1.0 + 3.0 * (% / 60)
+                // If % >= 60: Grade = 4.0 + 3.0 * ((% - 60) / 40)
+                let grade = 1.0;
+                if (percentage < 60) {
+                    grade = 1.0 + 3.0 * (percentage / 60);
+                } else {
+                    grade = 4.0 + 3.0 * ((percentage - 60) / 40);
+                }
+                grade = grade.toFixed(1);
+
+                // Display Results
+                document.getElementById('res-grade').textContent = grade;
+                document.getElementById('res-score').textContent = `${correctCount}/${total}`;
+                document.getElementById('res-percentage').textContent = `${percentage}%`;
+                document.getElementById('res-time').textContent = document.getElementById('quiz-timer').textContent || 'N/A';
+
+                // Confetti if high score
+                if (parseFloat(grade) >= 5.5 && typeof confetti === 'function') {
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                }
+
+                this.navTo('results');
+            }
+
+            finishPractice() {
+                let correctCount = 0;
+                this.activeQuestions.forEach(q => {
+                    if (this.userAnswers[q.id] === q.correct) correctCount++;
+                });
+
+                const total = this.activeQuestions.length;
+                const percentage = Math.round((correctCount / total) * 100);
+                let grade = percentage < 60 ? (1.0 + 3.0 * (percentage / 60)) : (4.0 + 3.0 * ((percentage - 60) / 40));
+
+                document.getElementById('res-grade').textContent = grade.toFixed(1);
+                document.getElementById('res-score').textContent = `${correctCount}/${total}`;
+                document.getElementById('res-percentage').textContent = `${percentage}%`;
+                document.getElementById('res-time').textContent = "Práctica";
+
+                this.navTo('results');
+            }
+
+            reviewExamAnswers() {
+                this.currentMode = 'practice';
+                this.currentIndex = 0;
+                this.navTo('quiz');
+                this.renderQuizQuestion();
+            }
+
+            // --- FLASHCARDS MODE ---
+            startFlashcards(unitId = 'all') {
+                if (unitId === 'all') {
+                    this.activeQuestions = [...QUESTIONS_BANK];
+                } else {
+                    this.activeQuestions = QUESTIONS_BANK.filter(q => q.unit === unitId);
+                }
+
+                this.flashcardIndex = 0;
+                this.flashcardIsFlipped = false;
+                this.navTo('flashcards');
+                this.renderFlashcard();
+            }
+
+            renderFlashcard() {
+                const q = this.activeQuestions[this.flashcardIndex];
+                if (!q) return;
+
+                // Ensure non-flipped start
+                const inner = document.getElementById('flashcard-inner');
+                this.flashcardIsFlipped = false;
+                inner.classList.remove('rotate-y-180');
+
+                document.getElementById('fc-current').textContent = this.flashcardIndex + 1;
+                document.getElementById('fc-total').textContent = this.activeQuestions.length;
+                document.getElementById('fc-category').textContent = q.unitTitle;
+                document.getElementById('fc-question').textContent = q.question;
+
+                // Answer string
+                const correctText = q.options[q.correct];
+                document.getElementById('fc-answer').textContent = correctText;
+                document.getElementById('fc-explanation').textContent = q.explanation;
+
+                // Save button update
+                const saveBtn = document.getElementById('fc-save-btn');
+                if (this.savedQuestionIds.has(q.id)) {
+                    saveBtn.className = "px-4 py-2 rounded-xl bg-amber-50 dark:bg-amber-950 border border-amber-300 text-xs font-semibold text-amber-600 flex items-center gap-1.5 shadow-sm";
+                } else {
+                    saveBtn.className = "px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5 shadow-sm";
+                }
+
+                lucide.createIcons();
+            }
+
+            flipCard() {
+                this.flashcardIsFlipped = !this.flashcardIsFlipped;
+                const inner = document.getElementById('flashcard-inner');
+                if (this.flashcardIsFlipped) {
+                    inner.classList.add('rotate-y-180');
+                } else {
+                    inner.classList.remove('rotate-y-180');
+                }
+            }
+
+            nextFlashcard() {
+                if (this.flashcardIndex < this.activeQuestions.length - 1) {
+                    this.flashcardIndex++;
+                    this.renderFlashcard();
+                }
+            }
+
+            prevFlashcard() {
+                if (this.flashcardIndex > 0) {
+                    this.flashcardIndex--;
+                    this.renderFlashcard();
+                }
+            }
+
+            toggleSaveCurrentFlashcard() {
+                const q = this.activeQuestions[this.flashcardIndex];
+                if (!q) return;
+
+                if (this.savedQuestionIds.has(q.id)) {
+                    this.savedQuestionIds.delete(q.id);
+                } else {
+                    this.savedQuestionIds.add(q.id);
+                }
+
+                localStorage.setItem('edu_saved_q', JSON.stringify([...this.savedQuestionIds]));
+                document.getElementById('saved-count-btn').textContent = this.savedQuestionIds.size;
+                document.getElementById('nav-saved').textContent = this.savedQuestionIds.size;
+                this.renderFlashcard();
+            }
+
+            // --- STATS PERSISTENCE ---
+            saveStats() {
+                localStorage.setItem('edu_stats', JSON.stringify(this.stats));
+                this.updateGlobalStatsUI();
+            }
+
+            updateGlobalStatsUI() {
+                const acc = this.stats.totalAnswered > 0 
+                    ? Math.round((this.stats.correctAnswered / this.stats.totalAnswered) * 100) 
+                    : 0;
+
+                document.getElementById('nav-acc').textContent = `${acc}%`;
+                document.getElementById('nav-streak').textContent = this.stats.maxStreak;
+                document.getElementById('nav-saved').textContent = this.savedQuestionIds.size;
+            }
+        }
+
+        // Initialize Application
+        let app;
+        window.onload = function() {
+            app = new QuizApp();
+        };
+    </script>
+</body>
+</html>
